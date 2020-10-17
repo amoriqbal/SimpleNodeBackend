@@ -5,8 +5,12 @@ const fs = require("fs");
 
 app.use(express.json());
 
-app.post("/process_update", (req, res) => {
+app.post("/process_update", 
+(req, res) => {
   try {
+    if(fs.existsSync("output_coor.txt")){
+      fs.unlinkSync("output_coor.txt")
+    }
     if (req && req.body && req.body.feed_script) {
       fs.writeFile("./input_coor.txt", req.body.feed_script, (err) => {
         var pyscript = spawn("python3", ["optscript.py"]);
@@ -14,7 +18,7 @@ app.post("/process_update", (req, res) => {
           console.log("PYTHON SCRIPT ERROR")
           console.log(err)
           res.statusCode = 500;
-          res.send("Error processing update")
+          res.send("Error processing update\n"+JSON.stringify(req.body))
         })
         pyscript.on("exit", (code, signal) => {
           fs.readFile("./output_coor.txt", (err, data) => {
@@ -31,10 +35,11 @@ app.post("/process_update", (req, res) => {
       console.log("invalid request");
       console.log(JSON.stringify(req.body));
       res.statusCode = 500;
-      res.send("wrong request structure");
+      res.send("wrong request structure\n"+JSON.stringify(req.body));
     }
   } catch (err) {
     console.log("Fatal error");
+    console.log(err)
   }
 });
 
