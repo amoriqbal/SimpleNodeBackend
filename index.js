@@ -17,14 +17,14 @@ app.post("/process_update",
         pyscript.stdout.on("error",(err)=>{
           console.log("PYTHON SCRIPT ERROR")
           console.log(err)
-          res.statusCode = 500;
+          //res.statusCode = 500;
           res.send("Error processing update\n"+JSON.stringify(req.body))
         })
         pyscript.on("exit", (code, signal) => {
           fs.readFile("./output_coor.txt", (err, data) => {
             if (err) {
               console.log(err);
-              res.statusCode = 500;
+              //res.statusCode = 500;
               res.send("Error reading output file from script");
             }
             res.send(data);
@@ -34,7 +34,7 @@ app.post("/process_update",
     } else {
       console.log("invalid request");
       console.log(JSON.stringify(req.body));
-      res.statusCode = 500;
+      //res.statusCode = 500;
       res.send("wrong request structure\n"+JSON.stringify(req.body));
     }
   } catch (err) {
